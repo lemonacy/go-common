@@ -1,4 +1,4 @@
-package cipher
+package hoo
 
 import (
 	"encoding/base64"
@@ -31,4 +31,12 @@ func TestDecryptDES_ECB_PKCS5Padding(t *testing.T) {
 	if string(plain) != "des_ecb_pkcs5padding" {
 		t.Error("Decryption failure")
 	}
+}
+
+func TestDecryptDES_ECB_PKCS5Padding2(t *testing.T) {
+	key := []byte("********")
+	str := "1f9xE7+7xrM=" // empty string
+	secret, _ := base64.StdEncoding.DecodeString(str)
+	plain, _ := DecryptDES_ECB_PKCS5Padding(key, secret)
+	fmt.Printf("decrypted result is [%s]\n", string(plain))
 }

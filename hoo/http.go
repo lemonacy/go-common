@@ -1,12 +1,24 @@
-package httputil
+package hoo
 
 import (
 	"compress/gzip"
 	"github.com/dsnet/compress/brotli"
 	"io"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"net/http/cookiejar"
 )
+
+func NewCookieClient() *http.Client {
+	jar, err := cookiejar.New(nil)
+	if err != nil {
+		panic(err)
+	}
+
+	client := http.Client{Jar: jar}
+	return &client
+}
 
 func ReadResponse(resp *http.Response) string {
 	var reader io.ReadCloser
@@ -30,4 +42,20 @@ func ReadResponse(resp *http.Response) string {
 	}
 	text := string(body)
 	return text
+}
+
+func PrintReqHeader(req *http.Request) {
+	printHeader(req.Header)
+}
+
+func PrintRespHeader(resp *http.Response) {
+	printHeader(resp.Header)
+}
+
+func printHeader(header http.Header) {
+	for name, values := range header {
+		for _, value := range values {
+			log.Println(name + ": " + value)
+		}
+	}
 }
