@@ -19,7 +19,7 @@ func CreateSameNameDir(path string) (string, error) {
         return "", err
     }
     if !b {
-        err = os.Mkdir(dir, 644)
+        err = os.Mkdir(dir, os.ModePerm)
         if err != nil {
             return "", err
         }

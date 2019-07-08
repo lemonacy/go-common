@@ -9,6 +9,7 @@ import (
     "log"
     "net/http"
     "net/http/cookiejar"
+    "regexp"
 )
 
 func NewCookieClient() *http.Client {
@@ -64,6 +65,13 @@ func ReadResponse(resp *http.Response) []byte {
         panic(err)
     }
     return body
+}
+
+func Host(url string) string {
+    regex, err := regexp.Compile(`.*?//(.+?)/.*`)
+    PanicOnErr(err)
+    host := regex.FindStringSubmatch(url)[1]
+    return host
 }
 
 func PrintReqHeader(req *http.Request) {

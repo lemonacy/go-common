@@ -21,6 +21,7 @@ import (
 
 type Downloader interface {
     Download(url, storedir string) (file string, err error)
+    DownloadBytes(url string) ([]byte, error)
 }
 
 type downloader struct {
@@ -63,7 +64,7 @@ func (c *downloader) Download(url, storedir string) (file string, err error) {
             continue
         }
 
-        saveto, err := os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 644)
+        saveto, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 644)
         PanicOnErr(err)
         saveto.Write(body)
         saveto.Close()
@@ -77,6 +78,55 @@ func (c *downloader) Download(url, storedir string) (file string, err error) {
         return path, nil
     } else {
         return "", errors.New("Failed to download " + url)
+    }
+}
+
+func (c *downloader) DownloadBytes(url string) ([]byte, error) {
+    log.Printf("start to downlaod %s", url)
+
+    success := false
+
+    var body []byte
+    for i := 0; i < 5; i++ {
+        //req, err := http.NewRequest("GET", url, nil)
+        //PanicOnErr(err)
+        //req.Header.Set("Host", Host(url))
+        //req.Host = Host(url)
+        //resp, err := c.client.Do(req)
+        resp, err := c.client.Get(url)
+        if err != nil {
+            log.Println(err.Error())
+            continue
+        }
+        log.Println(resp.Status)
+        var reader io.ReadCloser
+        switch resp.Header.Get("Content-Encoding") {
+        case "gzip":
+            reader, err = gzip.NewReader(resp.Body)
+            if err != nil {
+                panic(err)
+            }
+            defer reader.Close()
+        case "br":
+            reader, err = brotli.NewReader(resp.Body, nil)
+            defer reader.Close()
+        default:
+            reader = resp.Body
+        }
+        body, err = ioutil.ReadAll(reader)
+        if err != nil {
+            continue
+        }
+
+        success = true
+        break
+    }
+
+    if success || len(body) == 0 {
+        log.Println("downloaded")
+        return body, nil
+    } else {
+        return nil, errors.New("Failed to download " + url)
     }
 }
 
