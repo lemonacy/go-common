@@ -1,4 +1,4 @@
-package hoo
+package cipher
 
 import (
 	"encoding/base64"
