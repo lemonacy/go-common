@@ -1,6 +1,6 @@
 /**
- * Author: dengkuadong <dengkuadong@kingsoft.com>
- * Since: 2019-07-05
+ * Author: dengkuadong
+ * Date: 2019-07-05
  */
 
 package hoo
