@@ -1,4 +1,4 @@
-package common
+package go-common
 
 func init() {
 

@@ -1,0 +1,7 @@
+server:
+  port: 9090
+database:
+  postgres:
+    url: postgres://dengkuadong:123456@localhost/dbapp?sslmode=disable
+  mysql:
+    url: root:123456@tcp(localhost:3306)/go_common?parseTime=true
