@@ -74,5 +74,10 @@ func main() {
 		c.JSON(http.StatusOK, gin.H{"code": 200, "message": "success"})
 	})
 
+	web.Router.GET("/getAllUsers", func(c *gin.Context) {
+		result := db.GenericQuery("select * from t_user")
+		c.JSON(http.StatusOK, result)
+	})
+
 	web.Run()
 }
